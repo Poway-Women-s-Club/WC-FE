@@ -45,6 +45,15 @@ show_reading_time: false
   </div>
 </div>
 
+<div class="pwc-section" id="newsletter">
+  <h2>Club newsletter</h2>
+  <hr class="pwc-rule">
+  <p style="margin-top:0;">Catch up on recaps, upcoming events, scholarship news, and member spotlights. New issues are published regularly — read the latest and browse the full archive.</p>
+  <div class="pwc-home-feed-actions">
+    <a href="{{ site.baseurl }}/navigation/newsletter" class="pwc-btn pwc-btn-fill">Read the newsletter</a>
+  </div>
+</div>
+
 <div class="pwc-section" id="contact">
   <h2>Contact &amp; visits</h2>
   <hr class="pwc-rule">

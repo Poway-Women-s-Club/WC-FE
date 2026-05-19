@@ -26,6 +26,7 @@ minima:
     - { platform: github, user_url: "https://github.com/Poway-Women-s-Club/pwc" }
   nav_pages:
     - navigation/about.md
+    - navigation/newsletter.md
     - navigation/social.html
 
 # Event scheduling / signup endpoints.

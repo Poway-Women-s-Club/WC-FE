@@ -60,6 +60,24 @@ var Blog = (function () {
         }, 450);
       }
     }
+
+    /* Deep link: /navigation/blog?compose=1[&title=Newsletter%3A%20]
+       Used by the Newsletter page so admins land straight in the composer
+       with the title prefix pre-filled. Only opens for signed-in members. */
+    if (qp.get("compose") === "1" && sessionStorage.getItem("pwc_user")) {
+      var prefill = qp.get("title") || "";
+      setTimeout(function () {
+        showCompose();
+        if (prefill) {
+          var titleEl = document.getElementById("blog-post-title");
+          if (titleEl) {
+            titleEl.value = prefill;
+            titleEl.focus();
+            titleEl.setSelectionRange(prefill.length, prefill.length);
+          }
+        }
+      }, 300);
+    }
   }
 
   /* ── Event binding ───────────────────────────────────────────────────── */
