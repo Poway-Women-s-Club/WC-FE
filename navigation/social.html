@@ -752,6 +752,38 @@ show_reading_time: false
 }
 .pwc-social-pending-name { font-weight: 600; font-size: 0.9rem; color: var(--pwc-charcoal); }
 .pwc-social-pending-actions { display: flex; gap: 0.4rem; }
+
+/* ── Mobile: let the page scroll, stack panels in one column ─────────────
+   On phones the fixed-viewport shell traps content. Switch to natural
+   page flow so all panels (Home, Blog, Groups, Friends, Messages, Events)
+   are reachable by scrolling the page itself. */
+@media (max-width: 720px) {
+  #pwc-social-app {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+  .pwc-panel-grid {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow: visible;
+    padding: 0.75rem 0.6rem;
+    gap: 0.6rem;
+  }
+  .pwc-panel {
+    flex: 1 1 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+  /* Messages panel needs a bounded height even on mobile because its
+     internal DM layout has its own scroll regions. Cap at 70vh so the
+     user can scroll past it to other panels below. */
+  .pwc-panel--messages {
+    min-height: 360px;
+    max-height: 70vh;
+  }
+  .pwc-social-widgets { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+}
 </style>
 
 <script>

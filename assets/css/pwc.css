@@ -3225,6 +3225,169 @@ code, pre {
   .pwc-topbar-user span { display: none; }
 }
 
+/* ─── 8b. MOBILE / TOUCH IMPROVEMENTS ──────────────────────────────────────────
+   On phones (≤720px) the app pages (Member Portal, Messages, Events) historically
+   locked the page to the viewport with `overflow: hidden` so internal panels
+   could scroll independently. That works on desktop but on a phone the stacked
+   sidebar+main exceeds the viewport and the user gets stuck. These rules:
+     1. Restore natural page scrolling on small screens.
+     2. Convert fixed-viewport shells to auto-height stacks.
+     3. Tighten padding so content gets the screen back.
+     4. Enforce 44px minimum touch targets on buttons/inputs.
+     5. Prevent horizontal scroll caused by wide cards/images.
+   ============================================================================ */
+
+/* Never allow horizontal scroll on phones — wide tables / calendar overflow
+   their own scroll containers (added below) instead of pushing the page. */
+@media (max-width: 720px) {
+  html, body { overflow-x: hidden; max-width: 100%; }
+  img, video, iframe { max-width: 100%; height: auto; }
+}
+
+@media (max-width: 720px) {
+  /* 1. Restore page scrolling on app pages */
+  .page-content:has(#pwc-social-app),
+  .page-content:has(#pwc-social-gate),
+  .page-content:has(#pwc-profile-app) {
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  body { overflow-y: auto; }
+
+  /* 2. Stack app shells naturally — drop the fixed-viewport heights so the
+        sidebar (now a top row) and main content can grow with content and
+        scroll with the page instead of trapping content. */
+  .pwc-profile-wrap {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    height: auto;
+  }
+  .pwc-view--profile .pwc-sidebar,
+  .pwc-sidebar {
+    position: static;
+    height: auto;
+    overflow: visible;
+    top: auto;
+  }
+  .pwc-main {
+    overflow: visible;
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  /* Messages: keep the conversation list a manageable height, let the
+     thread grow naturally below. Page scroll handles the rest. */
+  .pwc-dm-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    height: auto;
+    min-height: 0;
+  }
+  .pwc-dm-sidebar { max-height: 45vh; }
+  .pwc-dm-list { max-height: 35vh; }
+
+  /* 3. Tighter padding so content gets the screen back */
+  .pwc-hero { padding: 2.75rem 1.1rem 2rem; }
+  .pwc-hero h1 { font-size: 2rem; line-height: 1.18; }
+  .pwc-hero p { font-size: 0.98rem; }
+  .pwc-hero-links { gap: 0.5rem; margin-top: 1.25rem; }
+  .pwc-hero-links .pwc-btn { width: 100%; max-width: 320px; justify-content: center; }
+
+  .pwc-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  .pwc-section h2 { font-size: 1.35rem; }
+  .pwc-section h3 { font-size: 1.15rem; margin-top: 1.25rem; }
+
+  .pwc-cards { grid-template-columns: 1fr; gap: 0.75rem; }
+  .pwc-card { padding: 1rem; }
+
+  .pwc-cta { padding: 1.75rem 1rem; }
+  .pwc-cta h2 { font-size: 1.4rem; }
+
+  .pwc-blog-page { padding: 1.25rem 1rem 2rem; }
+  .pwc-blog-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .pwc-blog-header h1 { font-size: 1.6rem; }
+  .pwc-blog-toolbar { gap: 0.5rem; }
+  .pwc-blog-search-wrap { flex-basis: 100%; }
+
+  /* Newsletter / home feed grids — single column on phones */
+  .pwc-home-ww-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+  .pwc-home-feed-actions { flex-direction: column; align-items: stretch; }
+  .pwc-home-feed-actions .pwc-btn { width: 100%; justify-content: center; }
+
+  /* 4. Touch targets — 44px min per WCAG/iOS, easier to hit accurately */
+  .pwc-btn,
+  .pwc-sidenav-btn,
+  .pwc-logout-btn,
+  .pwc-blog-filter-btn,
+  .pwc-blog-admin-btn {
+    min-height: 44px;
+  }
+  .pwc-blog-search,
+  .pwc-blog-select,
+  .form__input,
+  .pwc-form-group input,
+  .pwc-form-group select,
+  .pwc-form-group textarea,
+  .pwc-dm-search {
+    min-height: 44px;
+    font-size: 16px; /* prevents iOS Safari from zooming on focus */
+  }
+
+  /* Stack the .pwc-sidenav tabs as a horizontal scrollable strip so all
+     profile views remain reachable without a wall of buttons. */
+  .pwc-sidenav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.4rem;
+    padding: 0 0.25rem 0.4rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .pwc-sidenav-btn {
+    width: auto;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 0.55rem 0.95rem;
+  }
+
+  /* 5. FullCalendar fits — let the calendar shrink and scroll horizontally
+        inside its own container instead of pushing the page sideways. */
+  .events-full-width { padding-left: 0.5rem; padding-right: 0.5rem; }
+  #pwc-events-calendar {
+    min-height: 480px;
+    padding: 0.5rem 0.5rem 0.5rem;
+    overflow-x: auto;
+  }
+  #pwc-events-calendar .fc-toolbar { flex-wrap: wrap; gap: 0.4rem; }
+  #pwc-events-calendar .fc-toolbar-title { font-size: 1.15rem; }
+  #pwc-events-calendar .fc .fc-button { padding: 0.4rem 0.6rem; font-size: 0.82rem; }
+
+  /* Mobile hamburger menu items — wider tap targets */
+  .site-nav .trigger .page-link {
+    padding: 0.75rem 1.1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Footer columns stack and breathe a bit */
+  .footer-col-wrapper { margin-left: 0; }
+  .footer-col { padding-left: 0; padding-bottom: 0.5rem; }
+}
+
+/* Phones (≤480px): one more tightening pass */
+@media (max-width: 480px) {
+  .wrapper { padding-left: 12px; padding-right: 12px; }
+  .pwc-hero h1 { font-size: 1.75rem; }
+  .pwc-blog-header h1 { font-size: 1.4rem; }
+  .site-header .wrapper { padding: 0 14px; }
+  .site-title { font-size: 1.05rem; }
+}
+
 /* Dark mode intentionally omitted — light-only design */
 
 /* ── Daily banner (index.md) ───────────────── */
