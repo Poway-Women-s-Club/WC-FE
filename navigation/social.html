@@ -755,8 +755,8 @@ show_reading_time: false
 
 @media screen and (max-width: 768px) {
   #pwc-social-app {
+    display: block;
     height: auto;
-    min-height: calc(100vh - 56px);
     overflow: visible;
   }
   .pwc-topbar {
@@ -765,20 +765,30 @@ show_reading_time: false
     z-index: 100;
   }
   .pwc-panel-grid {
-    overflow-y: visible;
+    display: block;
     height: auto;
-    flex-direction: column;
-    flex-wrap: nowrap;
+    overflow: visible;
+    padding: 0.75rem;
   }
   .pwc-panel {
-    flex: none;
     width: 100%;
     min-width: 0;
-    min-height: 320px;
+    margin-bottom: 0.75rem;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  .pwc-panel-body {
+    overflow: visible;
+    height: auto;
   }
   .pwc-panel--messages {
-    max-height: none;
-    min-height: 460px;
+    min-height: 480px;
+    overflow: hidden;
+  }
+  .pwc-panel--messages .pwc-panel-body--messages {
+    height: 440px;
+    overflow: hidden;
   }
 }
 </style>

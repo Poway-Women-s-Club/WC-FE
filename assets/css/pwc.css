@@ -243,6 +243,7 @@ body {
   .page-content:has(#pwc-social-app),
   .page-content:has(#pwc-social-gate) {
     overflow: visible;
+    height: auto;
   }
 }
 
