@@ -3,15 +3,13 @@
 (function () {
   "use strict";
 
+  /* Use the configured site base (set in head.html). Reading the canonical
+     link returned the *current page's* path on non-home pages, producing
+     links like /navigation/newsletter/navigation/blog?... → 404. This script
+     currently runs only on the home page, but make it safe everywhere. */
   function siteBase() {
-    var c = document.querySelector('link[rel="canonical"]');
-    if (c) {
-      try {
-        var u = new URL(c.href);
-        return u.pathname.replace(/\/$/, "") || "";
-      } catch (e) {}
-    }
-    return "";
+    var b = (typeof window.PWC_BASE === "string") ? window.PWC_BASE : "";
+    return b.replace(/\/$/, "");
   }
 
   function esc(s) {

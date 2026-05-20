@@ -12,15 +12,13 @@
 
   var PREFIX_RE = /^newsletter\s*:\s*/i;
 
+  /* Always use the configured site base (set in head.html). The
+     home-feeds.js style of reading the canonical link returns the
+     *current page's* path on non-home pages, which produced links like
+     /navigation/newsletter/navigation/blog?... → 404. */
   function siteBase() {
-    var c = document.querySelector('link[rel="canonical"]');
-    if (c) {
-      try {
-        var u = new URL(c.href);
-        return u.pathname.replace(/\/$/, "") || "";
-      } catch (e) {}
-    }
-    return "";
+    var b = (typeof window.PWC_BASE === "string") ? window.PWC_BASE : "";
+    return b.replace(/\/$/, "");
   }
 
   function esc(s) {
