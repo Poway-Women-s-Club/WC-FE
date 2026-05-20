@@ -752,6 +752,35 @@ show_reading_time: false
 }
 .pwc-social-pending-name { font-weight: 600; font-size: 0.9rem; color: var(--pwc-charcoal); }
 .pwc-social-pending-actions { display: flex; gap: 0.4rem; }
+
+@media screen and (max-width: 768px) {
+  #pwc-social-app {
+    height: auto;
+    min-height: calc(100vh - 56px);
+    overflow: visible;
+  }
+  .pwc-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .pwc-panel-grid {
+    overflow-y: visible;
+    height: auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+  .pwc-panel {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    min-height: 320px;
+  }
+  .pwc-panel--messages {
+    max-height: none;
+    min-height: 460px;
+  }
+}
 </style>
 
 <script>
