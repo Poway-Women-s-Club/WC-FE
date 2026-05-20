@@ -258,7 +258,7 @@ show_reading_time: false
             allDay: false,
             backgroundColor: "rgba(196, 120, 138, 0.30)",
             borderColor: "rgba(196, 120, 138, 0.90)",
-            textColor: "#fbf8f6",
+            textColor: "#141414",
             extendedProps: {
               // No backend Event row for recurring meetings (we still allow public RSVP).
               backendEventId: "",
@@ -396,6 +396,15 @@ show_reading_time: false
       }
     }
 
+    /** Admins: all groups. Members: groups they belong to. */
+    function loadGroupsForMeetingModal(me) {
+      if (!API_BASE_URL) return Promise.resolve([]);
+      if (me && isAdminUser(me)) return loadAllGroups();
+      return fetch(apiUrl("/api/groups/my"), { credentials: "include" })
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (data) { return Array.isArray(data) ? data : []; });
+    }
+
     async function loadEventAttendingCount(eventId) {
       if (!API_BASE_URL) return null;
       if (!eventId) return null;
@@ -496,7 +505,7 @@ show_reading_time: false
             allDay: false,
             backgroundColor: bgColor,
             borderColor: bdrColor,
-            textColor: "#fbf8f6",
+            textColor: "#141414",
             extendedProps: {
               backendEventId: e.id,
               location: e.location || "",
@@ -838,23 +847,13 @@ show_reading_time: false
             emailInput.required = false;
             if (emailInput.parentElement) emailInput.parentElement.hidden = true;
           }
-          if (isAdminUser(me)) {
-            if (scopeLabel) scopeLabel.hidden = false;
-            if (scopeSelect) scopeSelect.value = "club";
-            loadAllGroups().then(function (groups) {
-              renderVisibilityGroupOptions(groups, myGroupIds || []);
-              syncVisibilityUi();
-            });
-            if (scopeSelect) scopeSelect.onchange = syncVisibilityUi;
-          } else {
-            if (scopeLabel) scopeLabel.hidden = true;
-            if (groupsLabel) groupsLabel.hidden = true;
-            if (scopeSelect) scopeSelect.value = "club";
-            if (groupsList) {
-              groupsList.setAttribute("data-required", "0");
-              groupsList.innerHTML = "";
-            }
-          }
+          if (scopeLabel) scopeLabel.hidden = false;
+          if (scopeSelect) scopeSelect.value = "club";
+          loadGroupsForMeetingModal(me).then(function (groups) {
+            renderVisibilityGroupOptions(groups, myGroupIds || []);
+            syncVisibilityUi();
+          });
+          if (scopeSelect) scopeSelect.onchange = syncVisibilityUi;
         } else {
           if (nameInput) {
             nameInput.required = true;
@@ -1149,7 +1148,7 @@ show_reading_time: false
           var meSched = await getCurrentUser();
           var scopeVal = "club";
           var visibleGroupIds = [];
-          if (meSched && isAdminUser(meSched)) {
+          if (meSched) {
             scopeVal = meetingModalForm.elements["visibility_scope"]
               ? (meetingModalForm.elements["visibility_scope"].value || "club")
               : "club";
